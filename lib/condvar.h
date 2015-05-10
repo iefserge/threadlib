@@ -27,6 +27,41 @@ namespace threadlib {
         mutex->lock();
       }
 
+      bool timed_wait(mutex_t* mutex, uint64_t max_time_microseconds) {
+        condvar_node_t node;
+        m_.lock();
+        node.next = q_;
+        q_ = &node;
+        m_.unlock();
+
+        mutex->unlock();
+        bool result = node.s.timed_wait(max_time_microseconds);
+        mutex->lock();
+
+        if (!result) {
+          m_.lock();
+          condvar_node_t* it = q_;
+          condvar_node_t* prev = nullptr;
+          while (it != nullptr) {
+            if (&node == it) {
+              if (prev) {
+                prev->next = it->next;
+              } else {
+                q_ = it->next;
+              }
+              it->next = nullptr;
+              break;
+            }
+
+            prev = it;
+            it = it->next;
+          }
+          m_.unlock();
+        }
+
+        return result;
+      }
+
       void signal() {
         m_.lock();
         if (q_ != nullptr) {

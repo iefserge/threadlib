@@ -17,6 +17,11 @@ void test_sem_wait_2() {
   printf("Thread 2 done\n");
 }
 
+void test_sem_timed_wait() {
+  sem.timed_wait(1000 * 1000 * 1); // 1 sec in microseconds
+  printf("Timed wait done\n");
+}
+
 void test_sem_signal() {
   std::this_thread::sleep_for(std::chrono::seconds(1));
   sem.signal();
@@ -37,5 +42,7 @@ int main() {
   t1.join();
   t2.join();
   t3.join();
+  std::thread t4(test_sem_timed_wait);
+  t4.join();
   printf("ok\n");
 }

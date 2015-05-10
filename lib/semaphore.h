@@ -28,6 +28,18 @@ namespace threadlib {
         }
       }
 
+      bool timed_wait(uint64_t max_time_microseconds) {
+        uint64_t end_time = get_time_microseconds() + max_time_microseconds;
+        while (!try_wait()) {
+          if (get_time_microseconds() > end_time) {
+            return false;
+          }
+          sched();
+        }
+
+        return true;
+      }
+
       void signal() {
         uint32_t count;
 
