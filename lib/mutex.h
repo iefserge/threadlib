@@ -8,7 +8,7 @@
 namespace threadlib {
   class mutex_t : private spinlock_t {
     public:
-      mutex_t() {}
+      mutex_t() : owner_(0), depth_(0), is_recirsive_(false) {}
 
       /**
        * Make this mutex recursive. It is allowed to call this method once

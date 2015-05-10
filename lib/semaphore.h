@@ -7,7 +7,6 @@
 namespace threadlib {
   class semaphore_t {
     public:
-      volatile uint32_t count_;
       semaphore_t(uint32_t initial_count) : count_(initial_count) {}
 
       bool try_wait() {
@@ -48,6 +47,7 @@ namespace threadlib {
         } while (__sync_val_compare_and_swap(&count_, count, count + 1) != count);
       }
     private:
+      volatile uint32_t count_;
       THREAD_LIB_DELETE_COPY_AND_ASSIGN(semaphore_t);
   };
 }
