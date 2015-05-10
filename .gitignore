@@ -1,0 +1,5 @@
+spinlock_test
+condvar_test
+sem_test
+mutex_test
+recursive_mutex_test
