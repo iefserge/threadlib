@@ -1,11 +1,11 @@
-#include "recursive_mutex.h"
+#include "mutex.h"
 #include <sched.h>
 #include <stdio.h>
 #include <thread>
 
 using namespace threadlib;
 
-recursive_mutex_t m;
+mutex_t m;
 
 void test_1() {
   bool t;
@@ -36,6 +36,7 @@ namespace threadlib {
 }
 
 int main() {
+  m.set_recursive();
   std::thread t1(test_1);
   std::thread t2(test_2);
   t1.join();
